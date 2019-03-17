@@ -1,3 +1,5 @@
+package simple;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.DatagramPacket;
