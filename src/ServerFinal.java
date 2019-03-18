@@ -1,25 +1,26 @@
 import java.io.IOException;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class ServerFinal {
+    HashMap<SocketAddress, String> IotUsers;
 
     public ServerFinal() throws IOException {
         sendMulticast( "Someone online?" );
         long endTime = System.currentTimeMillis() + 5000;
+        this.IotUsers = new HashMap<>();
         while (System.currentTimeMillis() < endTime) {
             receiving();
         }
         System.out.println( "------------------" );
         while (true) {
+            this.IotUsers = new HashMap<>();
             sendMulticast( "Still alive?" );
             endTime = System.currentTimeMillis() + 6000;
             while (System.currentTimeMillis() < endTime) {
                 receiving();
             }
+            System.out.println( this.IotUsers );
             System.out.println( "------------------" );
         }
     }
@@ -33,6 +34,8 @@ public class ServerFinal {
             socket.receive( packet );
             String modifiedSentence = new String( packet.getData() );
             System.out.println( modifiedSentence );
+            System.out.println( packet.getSocketAddress() );
+            this.IotUsers.put( packet.getSocketAddress(), modifiedSentence );
         } catch (SocketTimeoutException timeOut) {
             System.out.println( "timeout" );
         }

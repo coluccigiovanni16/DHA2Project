@@ -7,14 +7,14 @@ import java.net.MulticastSocket;
 
 public class ClientFinal1 {
 
-    public ClientFinal1() throws IOException, InterruptedException {
+    public ClientFinal1(String i) throws IOException, InterruptedException {
         MulticastSocket socket = new MulticastSocket( 7777 );
         InetAddress address = InetAddress.getByName( "224.0.0.1" );
         socket.joinGroup( address );
         while (true) {
             InetAddress serveAddr = receiveFromServer( socket );
             Thread.sleep( 500 );
-            sendToServer( "Alive1", serveAddr );
+            sendToServer( "Alive" + i, serveAddr );
         }
     }
 
@@ -36,6 +36,6 @@ public class ClientFinal1 {
 
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        ClientFinal1 c1 = new ClientFinal1();
+        ClientFinal1 c1 = new ClientFinal1( "1" );
     }
 }
