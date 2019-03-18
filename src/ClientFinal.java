@@ -19,7 +19,7 @@ public class ClientFinal {
     }
 
     private InetAddress receiveFromServer(MulticastSocket socket) throws IOException {
-        byte[] mex = new byte[64000];
+        byte[] mex = new byte[65507];
         DatagramPacket packet = new DatagramPacket( mex, mex.length );
         socket.receive( packet );
         String modifiedSentence =

@@ -27,7 +27,7 @@ public class ServerFinal {
 
     private void receiving() throws IOException {
         DatagramSocket socket = new DatagramSocket( 7776 );
-        byte[] mex = new byte[64000];
+        byte[] mex = new byte[65507];
         DatagramPacket packet = new DatagramPacket( mex, mex.length );
         socket.setSoTimeout( 5000 );
         try {
