@@ -5,16 +5,16 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 
 
-public class ClientFinal {
+public class ClientFinal1 {
 
-    public ClientFinal() throws IOException, InterruptedException {
+    public ClientFinal1() throws IOException, InterruptedException {
         MulticastSocket socket = new MulticastSocket( 7777 );
         InetAddress address = InetAddress.getByName( "224.0.0.1" );
         socket.joinGroup( address );
         while (true) {
             InetAddress serveAddr = receiveFromServer( socket );
             Thread.sleep( 500 );
-            sendToServer( "Alive0", serveAddr );
+            sendToServer( "Alive1", serveAddr );
         }
     }
 
@@ -36,6 +36,6 @@ public class ClientFinal {
 
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        ClientFinal c1 = new ClientFinal();
+        ClientFinal1 c1 = new ClientFinal1();
     }
 }

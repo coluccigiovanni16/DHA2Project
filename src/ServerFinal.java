@@ -1,29 +1,66 @@
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
+import java.net.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Objects;
 
 public class ServerFinal {
 
-
-    public static void main(String[] args) throws IOException, InterruptedException {
-        DatagramSocket socket = new DatagramSocket();
-        DatagramSocket socket1 = new DatagramSocket( 7776 );
+    public ServerFinal() throws IOException {
+        sendMulticast( "Someone online?" );
+        receiving();
         while (true) {
-
-            byte mex[] = "Still alive?".getBytes();
-            InetAddress address = InetAddress.getByName( "224.0.0.1" );
-            DatagramPacket packet = new DatagramPacket( mex, mex.length, address, 7777 );
-            socket.send( packet );
-            mex = new byte[64000];
-            packet = new DatagramPacket( mex, mex.length );
-            socket1.receive( packet );
-            String modifiedSentence =
-                    new String( packet.getData() );
-            System.out.println( modifiedSentence );
-
-            Thread.sleep( 5000 );
+            sendMulticast( "Still alive?" );
+            receiving();
         }
+    }
+
+    private void receiving() throws IOException {
+        DatagramSocket socket = new DatagramSocket( 7776 );
+        byte[] mex = new byte[64000];
+        DatagramPacket packet = new DatagramPacket( mex, mex.length );
+        socket.setSoTimeout( 5000 );
+        try {
+            socket.receive( packet );
+            String modifiedSentence = new String( packet.getData() );
+            System.out.println( modifiedSentence );
+        } catch (SocketTimeoutException timeOut) {
+            System.out.println( "timeout" );
+        }
+        socket.close();
+
+    }
+
+
+    private static void sendMulticast(String message) throws IOException {
+        byte mex[] = message.getBytes();
+        DatagramPacket packetToSend = new DatagramPacket( mex, mex.length, listAllBroadcastAddresses().get( 0 ), 7777 );
+        DatagramSocket sender = new DatagramSocket();
+        sender.send( packetToSend );
+    }
+
+    public static List<InetAddress> listAllBroadcastAddresses() throws SocketException {
+        List<InetAddress> broadcastList = new ArrayList<>();
+        Enumeration<NetworkInterface> interfaces
+                = NetworkInterface.getNetworkInterfaces();
+        while (interfaces.hasMoreElements()) {
+            NetworkInterface networkInterface = interfaces.nextElement();
+
+            if (networkInterface.isLoopback() || !networkInterface.isUp()) {
+                continue;
+            }
+
+            networkInterface.getInterfaceAddresses().stream()
+                    .map( a -> a.getBroadcast() )
+                    .filter( Objects::nonNull )
+                    .forEach( broadcastList::add );
+        }
+        return broadcastList;
+    }
+
+    public static void main(String[] args) throws IOException {
+        ServerFinal server = new ServerFinal();
     }
 }
 
