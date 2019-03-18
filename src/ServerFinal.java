@@ -9,10 +9,18 @@ public class ServerFinal {
 
     public ServerFinal() throws IOException {
         sendMulticast( "Someone online?" );
-        receiving();
+        long endTime = System.currentTimeMillis() + 5000;
+        while (System.currentTimeMillis() < endTime) {
+            receiving();
+        }
+        System.out.println( "------------------" );
         while (true) {
             sendMulticast( "Still alive?" );
-            receiving();
+            endTime = System.currentTimeMillis() + 6000;
+            while (System.currentTimeMillis() < endTime) {
+                receiving();
+            }
+            System.out.println( "------------------" );
         }
     }
 
