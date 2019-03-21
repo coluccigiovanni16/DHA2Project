@@ -1,8 +1,5 @@
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
+import java.net.*;
 
 
 public class ClientFinal1 {
@@ -12,26 +9,26 @@ public class ClientFinal1 {
         InetAddress address = InetAddress.getByName( "224.0.0.1" );
         socket.joinGroup( address );
         while (true) {
-            InetAddress serveAddr = receiveFromServer( socket );
+            InetSocketAddress serveAddr = (InetSocketAddress) receiveFromServer( socket );
             Thread.sleep( 500 );
             sendToServer( "Alive" + i, serveAddr );
         }
     }
 
-    private InetAddress receiveFromServer(MulticastSocket socket) throws IOException {
+    private SocketAddress receiveFromServer(MulticastSocket socket) throws IOException {
         byte[] mex = new byte[65507];
         DatagramPacket packet = new DatagramPacket( mex, mex.length );
         socket.receive( packet );
         String modifiedSentence =
                 new String( packet.getData() );
         System.out.println( modifiedSentence );
-        return packet.getAddress();
+        return packet.getSocketAddress();
     }
 
 
-    private static void sendToServer(String message, InetAddress serverAddress) throws IOException, InterruptedException {
+    private static void sendToServer(String message, InetSocketAddress serverAddress) throws IOException, InterruptedException {
         byte[] mex = message.getBytes();
-        new DatagramSocket().send( new DatagramPacket( mex, mex.length, serverAddress, 7776 ) );
+        new DatagramSocket().send( new DatagramPacket( mex, mex.length, serverAddress.getAddress(), serverAddress.getPort() ) );
     }
 
 

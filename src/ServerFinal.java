@@ -3,39 +3,68 @@ import java.net.*;
 import java.util.*;
 
 public class ServerFinal {
-    HashMap<SocketAddress, String> IotUsers;
+    HashMap<InetSocketAddress, Integer> IotUsers;
 
     public ServerFinal() throws IOException {
-        sendMulticast( "Someone online?" );
-        long endTime = System.currentTimeMillis() + 5000;
         this.IotUsers = new HashMap<>();
-        while (System.currentTimeMillis() < endTime) {
-            receiving();
-        }
-        System.out.println( "------------------" );
         while (true) {
-            this.IotUsers = new HashMap<>();
-            sendMulticast( "Still alive?" );
-            endTime = System.currentTimeMillis() + 6000;
-            while (System.currentTimeMillis() < endTime) {
-                receiving();
+            discoveryClient();
+            long endTime = System.currentTimeMillis() + 10000;
+            while (System.currentTimeMillis() < endTime && !IotUsers.isEmpty()) {
+                for (SocketAddress s : IotUsers.keySet()) {
+                    endTime = System.currentTimeMillis() + 500;
+                    while (System.currentTimeMillis() < endTime) {
+                        sendMulticastLoop( "Still alive?", (InetSocketAddress) s );
+                        receivingLoop();
+                    }
+                    if (IotUsers.get( s ) == 0) {
+                        IotUsers.remove( s );
+                    }
+                    System.out.println( this.IotUsers );
+                    System.out.println( "------------------" );
+
+                }
             }
-            System.out.println( this.IotUsers );
-            System.out.println( "------------------" );
         }
     }
 
-    private void receiving() throws IOException {
+    private void discoveryClient() throws IOException {
+        sendMulticastInit( "Someone online?" );
+        long endTime = System.currentTimeMillis() + 5000;
+        while (System.currentTimeMillis() < endTime) {
+            receivingInit();
+        }
+        System.out.println( "------------------" );
+    }
+
+
+    private void receivingLoop() throws IOException {
         DatagramSocket socket = new DatagramSocket( 7776 );
         byte[] mex = new byte[65507];
         DatagramPacket packet = new DatagramPacket( mex, mex.length );
-        socket.setSoTimeout( 5000 );
+        socket.setSoTimeout( 100 );
         try {
             socket.receive( packet );
             String modifiedSentence = new String( packet.getData() );
             System.out.println( modifiedSentence );
             System.out.println( packet.getSocketAddress() );
-            this.IotUsers.put( packet.getSocketAddress(), modifiedSentence );
+        } catch (SocketTimeoutException timeOut) {
+            System.out.println( "timeout" );
+        }
+        socket.close();
+    }
+
+    private void receivingInit() throws IOException {
+        MulticastSocket socket = new MulticastSocket();
+        byte[] mex = new byte[65507];
+        DatagramPacket packet = new DatagramPacket( mex, mex.length );
+        socket.setSoTimeout( 500 );
+        try {
+            socket.receive( packet );
+            String modifiedSentence = new String( packet.getData() );
+            System.out.println( modifiedSentence );
+            System.out.println( packet.getSocketAddress() );
+            this.IotUsers.put( (InetSocketAddress) packet.getSocketAddress(), 0 );
         } catch (SocketTimeoutException timeOut) {
             System.out.println( "timeout" );
         }
@@ -43,11 +72,17 @@ public class ServerFinal {
 
     }
 
-
-    private static void sendMulticast(String message) throws IOException {
-        byte mex[] = message.getBytes();
-        DatagramPacket packetToSend = new DatagramPacket( mex, mex.length, listAllBroadcastAddresses().get( 0 ), 7777 );
+    private void sendMulticastLoop(String s, InetSocketAddress socketIot) throws IOException {
+        byte mex[] = s.getBytes();
+        DatagramPacket packetToSend = new DatagramPacket( mex, mex.length, socketIot.getAddress(), socketIot.getPort() );
         DatagramSocket sender = new DatagramSocket();
+        sender.send( packetToSend );
+    }
+
+    private static void sendMulticastInit(String message) throws IOException {
+        byte mex[] = message.getBytes();
+        DatagramPacket packetToSend = new DatagramPacket( mex, mex.length, InetAddress.getByName( "224.0.0.1" ), 7777 );
+        MulticastSocket sender = new MulticastSocket();
         sender.send( packetToSend );
     }
 

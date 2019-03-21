@@ -13,6 +13,7 @@ public class ClientFinal {
         socket.joinGroup( address );
         while (true) {
             InetAddress serveAddr = receiveFromServer( socket );
+            socket.leaveGroup( address );
             Thread.sleep( 250 );
             sendToServer( "Alive" + i, serveAddr );
         }
