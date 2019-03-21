@@ -5,26 +5,42 @@ import java.util.*;
 public class ServerFinal {
     HashMap<InetSocketAddress, Integer> IotUsers;
 
-    public ServerFinal() throws IOException {
+    public ServerFinal() throws IOException, InterruptedException {
         this.IotUsers = new HashMap<>();
         while (true) {
             discoveryClient();
-            long endTime = System.currentTimeMillis() + 10000;
+            Thread.sleep( 5000 );
+            long endTime = System.currentTimeMillis() + 30000;
             while (System.currentTimeMillis() < endTime && !IotUsers.isEmpty()) {
-                for (SocketAddress s : IotUsers.keySet()) {
-                    endTime = System.currentTimeMillis() + 500;
-                    while (System.currentTimeMillis() < endTime) {
-                        DatagramSocket loopSocket = sendUnicastLoop( "Still alive?", (InetSocketAddress) s );
-                        receivingLoop( loopSocket );
-                    }
-                    if (IotUsers.get( s ) == 0) {
-                        IotUsers.remove( s );
-                    }
-                    System.out.println( this.IotUsers );
-                    System.out.println( "------------------" );
+                unicast();
+            }
+        }
+    }
 
+    private void unicast() throws IOException {
+        for (InetSocketAddress s : this.IotUsers.keySet()) {
+            boolean vivo = false;
+            byte mexSend[] = "Still Alive".getBytes();
+            DatagramPacket packetToSend = new DatagramPacket( mexSend, mexSend.length, s.getAddress(), s.getPort() );
+            DatagramSocket socket = new DatagramSocket();
+//            scegliere il numero di pacchetti da inviare
+            for (int i = 0; i < 5; i++) {
+                socket.send( packetToSend );
+                byte[] mexRecv = new byte[65507];
+                DatagramPacket packetReceived = new DatagramPacket( mexRecv, mexRecv.length );
+                try {
+                    socket.setSoTimeout( 1000 );
+                    socket.receive( packetReceived );
+                    vivo = true;
+                    break;
+                } catch (SocketTimeoutException timeout) {
+                    //packetcount--;
                 }
             }
+            if (!vivo) {
+                this.IotUsers.remove( s );
+            }
+            socket.close();
         }
     }
 
@@ -39,25 +55,27 @@ public class ServerFinal {
     }
 
 
-    private void receivingLoop(DatagramSocket socket) throws IOException {
+    private boolean receivingLoop(DatagramSocket socket) throws IOException {
         byte[] mex = new byte[65507];
         DatagramPacket packet = new DatagramPacket( mex, mex.length );
-        socket.setSoTimeout( 100 );
         try {
+            socket.setSoTimeout( 500 );
             socket.receive( packet );
             System.out.println( new String( packet.getData() ) );
             System.out.println( packet.getSocketAddress() );
-            this.IotUsers.put( (InetSocketAddress) packet.getSocketAddress(), this.IotUsers.get( packet.getSocketAddress() ) + 1 );
+            this.IotUsers.put( (InetSocketAddress) packet.getSocketAddress(), 1 );
         } catch (SocketTimeoutException timeOut) {
             System.out.println( "timeout" );
+            return false;
         }
         socket.close();
+        return true;
     }
 
     private void receivingInit(MulticastSocket discoverySocket) throws IOException {
         byte[] mex = new byte[65507];
         DatagramPacket packet = new DatagramPacket( mex, mex.length );
-        discoverySocket.setSoTimeout( 500 );
+        discoverySocket.setSoTimeout( 6000 );
         try {
             discoverySocket.receive( packet );
             System.out.println( new String( packet.getData() ) );
@@ -105,7 +123,7 @@ public class ServerFinal {
         return broadcastList;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         ServerFinal server = new ServerFinal();
     }
 }
