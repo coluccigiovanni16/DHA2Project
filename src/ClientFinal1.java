@@ -3,6 +3,7 @@ import java.net.*;
 
 
 public class ClientFinal1 {
+    private static int localPort;
 
     public ClientFinal1() throws IOException, InterruptedException {
         MulticastSocket socket = new MulticastSocket( 7777 );
@@ -14,13 +15,13 @@ public class ClientFinal1 {
         Thread.sleep( 100 );
         sendToServer( "New", serveAddr );
         while (true) {
-            InetSocketAddress add=receiveFromServerLoop(serveAddr.getAddress());
+            DatagramSocket socket1 = new DatagramSocket( localPort );
+            InetSocketAddress add = receiveFromServerLoop( socket1 );
             sendToServer( "Alive", add );
         }
     }
 
-    private InetSocketAddress receiveFromServerLoop(InetAddress servAddr) throws IOException {
-        DatagramSocket socket = new DatagramSocket(7776);
+    private InetSocketAddress receiveFromServerLoop(DatagramSocket socket) throws IOException {
 //        socket.setReuseAddress(true);
 //        System.out.println(socket.getReuseAddress());
 //        socket.bind(new InetSocketAddress(servAddr,7776));
@@ -31,7 +32,6 @@ public class ClientFinal1 {
         String modifiedSentence =
                 new String( packet.getData() );
         System.out.println( modifiedSentence );
-        socket.close();
         return (InetSocketAddress) packet.getSocketAddress();
     }
 
@@ -46,10 +46,12 @@ public class ClientFinal1 {
     }
 
 
-    private static void sendToServer(String message, InetSocketAddress serverAddress) throws IOException {
+    private static void sendToServer(String message, InetSocketAddress serverAddress) throws IOException, InterruptedException {
         byte[] mex = message.getBytes();
         DatagramSocket socket = new DatagramSocket();
         socket.send( new DatagramPacket( mex, mex.length, serverAddress.getAddress(), serverAddress.getPort() ) );
+        Thread.sleep( 1000 );
+        localPort = socket.getLocalPort();
         socket.close();
     }
 

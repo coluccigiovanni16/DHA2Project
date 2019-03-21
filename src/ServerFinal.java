@@ -28,9 +28,9 @@ public class ServerFinal {
             InetSocketAddress s=this.IotUsers.get(i);
             boolean vivo = false;
             byte[] mexSend = "Still Alive?".getBytes();
-            DatagramPacket packetToSend = new DatagramPacket( mexSend, mexSend.length, s.getAddress(), 7776);
+            DatagramPacket packetToSend = new DatagramPacket( mexSend, mexSend.length, s.getAddress(), s.getPort());
             DatagramSocket socket = new DatagramSocket();
-            socket.setReuseAddress(true);
+//            socket.setReuseAddress(true);
             //System.out.println(socket.getReuseAddress());
 //            scegliere il numero di pacchetti da inviare
             for (int j = 0; j < 5; j++) {
