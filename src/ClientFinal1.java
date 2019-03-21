@@ -20,11 +20,11 @@ public class ClientFinal1 {
     }
 
     private InetSocketAddress receiveFromServerLoop(InetAddress servAddr) throws IOException {
-        DatagramSocket socket = new DatagramSocket();
-        socket.setReuseAddress(true);
-        System.out.println(socket.getReuseAddress());
-        socket.bind(new InetSocketAddress(servAddr,7776));
-        System.out.println(socket.getReuseAddress());
+        DatagramSocket socket = new DatagramSocket(7776);
+//        socket.setReuseAddress(true);
+//        System.out.println(socket.getReuseAddress());
+//        socket.bind(new InetSocketAddress(servAddr,7776));
+//        System.out.println(socket.getReuseAddress());
         byte[] mex = new byte[65507];
         DatagramPacket packet = new DatagramPacket( mex, mex.length );
         socket.receive( packet );
