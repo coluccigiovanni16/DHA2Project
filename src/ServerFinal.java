@@ -14,8 +14,8 @@ public class ServerFinal {
                 for (SocketAddress s : IotUsers.keySet()) {
                     endTime = System.currentTimeMillis() + 500;
                     while (System.currentTimeMillis() < endTime) {
-                        sendMulticastLoop( "Still alive?", (InetSocketAddress) s );
-                        receivingLoop();
+                        DatagramSocket loopSocket = sendUnicastLoop( "Still alive?", (InetSocketAddress) s );
+                        receivingLoop( loopSocket );
                     }
                     if (IotUsers.get( s ) == 0) {
                         IotUsers.remove( s );
@@ -29,61 +29,61 @@ public class ServerFinal {
     }
 
     private void discoveryClient() throws IOException {
-        sendMulticastInit( "Someone online?" );
+        MulticastSocket discoverySocket = sendMulticastInit( "Someone online?" );
         long endTime = System.currentTimeMillis() + 5000;
         while (System.currentTimeMillis() < endTime) {
-            receivingInit();
+            receivingInit( discoverySocket );
         }
+        discoverySocket.close();
         System.out.println( "------------------" );
     }
 
 
-    private void receivingLoop() throws IOException {
-        DatagramSocket socket = new DatagramSocket( 7776 );
+    private void receivingLoop(DatagramSocket socket) throws IOException {
         byte[] mex = new byte[65507];
         DatagramPacket packet = new DatagramPacket( mex, mex.length );
         socket.setSoTimeout( 100 );
         try {
             socket.receive( packet );
-            String modifiedSentence = new String( packet.getData() );
-            System.out.println( modifiedSentence );
+            System.out.println( new String( packet.getData() ) );
             System.out.println( packet.getSocketAddress() );
+            this.IotUsers.put( (InetSocketAddress) packet.getSocketAddress(), this.IotUsers.get( packet.getSocketAddress() ) + 1 );
         } catch (SocketTimeoutException timeOut) {
             System.out.println( "timeout" );
         }
         socket.close();
     }
 
-    private void receivingInit() throws IOException {
-        MulticastSocket socket = new MulticastSocket();
+    private void receivingInit(MulticastSocket discoverySocket) throws IOException {
         byte[] mex = new byte[65507];
         DatagramPacket packet = new DatagramPacket( mex, mex.length );
-        socket.setSoTimeout( 500 );
+        discoverySocket.setSoTimeout( 500 );
         try {
-            socket.receive( packet );
-            String modifiedSentence = new String( packet.getData() );
-            System.out.println( modifiedSentence );
+            discoverySocket.receive( packet );
+            System.out.println( new String( packet.getData() ) );
             System.out.println( packet.getSocketAddress() );
             this.IotUsers.put( (InetSocketAddress) packet.getSocketAddress(), 0 );
         } catch (SocketTimeoutException timeOut) {
             System.out.println( "timeout" );
         }
-        socket.close();
 
     }
 
-    private void sendMulticastLoop(String s, InetSocketAddress socketIot) throws IOException {
+    private DatagramSocket sendUnicastLoop(String s, InetSocketAddress socketIot) throws IOException {
         byte mex[] = s.getBytes();
         DatagramPacket packetToSend = new DatagramPacket( mex, mex.length, socketIot.getAddress(), socketIot.getPort() );
         DatagramSocket sender = new DatagramSocket();
         sender.send( packetToSend );
+        return sender;
+
     }
 
-    private static void sendMulticastInit(String message) throws IOException {
+    private static MulticastSocket sendMulticastInit(String message) throws IOException {
         byte mex[] = message.getBytes();
         DatagramPacket packetToSend = new DatagramPacket( mex, mex.length, InetAddress.getByName( "224.0.0.1" ), 7777 );
         MulticastSocket sender = new MulticastSocket();
         sender.send( packetToSend );
+        return sender;
     }
 
     public static List<InetAddress> listAllBroadcastAddresses() throws SocketException {
