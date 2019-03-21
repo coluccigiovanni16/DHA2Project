@@ -14,19 +14,25 @@ public class ClientFinal1 {
         Thread.sleep( 100 );
         sendToServer( "New", serveAddr );
         while (true) {
-            receiveFromServerLoop();
-            sendToServer( "Alive", serveAddr );
+            InetSocketAddress add=receiveFromServerLoop(serveAddr.getAddress());
+            sendToServer( "Alive", add );
         }
     }
 
-    private void receiveFromServerLoop() throws IOException {
+    private InetSocketAddress receiveFromServerLoop(InetAddress servAddr) throws IOException {
         DatagramSocket socket = new DatagramSocket();
+        socket.setReuseAddress(true);
+        System.out.println(socket.getReuseAddress());
+        socket.bind(new InetSocketAddress(servAddr,7776));
+        System.out.println(socket.getReuseAddress());
         byte[] mex = new byte[65507];
         DatagramPacket packet = new DatagramPacket( mex, mex.length );
         socket.receive( packet );
         String modifiedSentence =
                 new String( packet.getData() );
         System.out.println( modifiedSentence );
+        socket.close();
+        return (InetSocketAddress) packet.getSocketAddress();
     }
 
     private SocketAddress receiveFromServer(MulticastSocket socket) throws IOException {

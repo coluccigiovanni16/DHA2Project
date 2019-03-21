@@ -3,42 +3,57 @@ import java.net.*;
 import java.util.*;
 
 public class ServerFinal {
-    HashMap<InetSocketAddress, Integer> IotUsers;
+    LinkedList<InetSocketAddress> IotUsers;
 
     public ServerFinal() throws IOException, InterruptedException {
-        this.IotUsers = new HashMap<>();
+        this.IotUsers = new LinkedList<>();
+        DatagramSocket socket=new DatagramSocket();
+        socket.setReuseAddress(true);
+        socket.close();
         while (true) {
             discoveryClient();
             Thread.sleep( 5000 );
+            System.out.println(IotUsers.toString());
             long endTime = System.currentTimeMillis() + 30000;
             while (System.currentTimeMillis() < endTime && !IotUsers.isEmpty()) {
                 unicast();
+                Thread.sleep(5000);
             }
         }
     }
 
     private void unicast() throws IOException {
-        for (InetSocketAddress s : this.IotUsers.keySet()) {
+        for (int i=0;i< this.IotUsers.size();i++) {
+            System.out.println(i);
+            InetSocketAddress s=this.IotUsers.get(i);
             boolean vivo = false;
-            byte mexSend[] = "Still Alive".getBytes();
-            DatagramPacket packetToSend = new DatagramPacket( mexSend, mexSend.length, s.getAddress(), s.getPort() );
+            byte[] mexSend = "Still Alive?".getBytes();
+            DatagramPacket packetToSend = new DatagramPacket( mexSend, mexSend.length, s.getAddress(), 7776);
             DatagramSocket socket = new DatagramSocket();
+            socket.setReuseAddress(true);
+            //System.out.println(socket.getReuseAddress());
 //            scegliere il numero di pacchetti da inviare
-            for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                System.out.println(j);
                 socket.send( packetToSend );
                 byte[] mexRecv = new byte[65507];
                 DatagramPacket packetReceived = new DatagramPacket( mexRecv, mexRecv.length );
                 try {
                     socket.setSoTimeout( 1000 );
                     socket.receive( packetReceived );
+                    System.out.println(new String(packetReceived.getData()));
                     vivo = true;
+                    //ricevo una risposta
                     break;
                 } catch (SocketTimeoutException timeout) {
-                    //packetcount--;
+                    //pacchetto perso
+                    System.out.println("perso");
+
                 }
             }
             if (!vivo) {
                 this.IotUsers.remove( s );
+                i--;
             }
             socket.close();
         }
@@ -63,7 +78,7 @@ public class ServerFinal {
             socket.receive( packet );
             System.out.println( new String( packet.getData() ) );
             System.out.println( packet.getSocketAddress() );
-            this.IotUsers.put( (InetSocketAddress) packet.getSocketAddress(), 1 );
+            this.IotUsers.add( (InetSocketAddress) packet.getSocketAddress());
         } catch (SocketTimeoutException timeOut) {
             System.out.println( "timeout" );
             return false;
@@ -80,7 +95,7 @@ public class ServerFinal {
             discoverySocket.receive( packet );
             System.out.println( new String( packet.getData() ) );
             System.out.println( packet.getSocketAddress() );
-            this.IotUsers.put( (InetSocketAddress) packet.getSocketAddress(), 0 );
+            this.IotUsers.add( (InetSocketAddress) packet.getSocketAddress() );
         } catch (SocketTimeoutException timeOut) {
             System.out.println( "timeout" );
         }
@@ -104,24 +119,6 @@ public class ServerFinal {
         return sender;
     }
 
-    public static List<InetAddress> listAllBroadcastAddresses() throws SocketException {
-        List<InetAddress> broadcastList = new ArrayList<>();
-        Enumeration<NetworkInterface> interfaces
-                = NetworkInterface.getNetworkInterfaces();
-        while (interfaces.hasMoreElements()) {
-            NetworkInterface networkInterface = interfaces.nextElement();
-
-            if (networkInterface.isLoopback() || !networkInterface.isUp()) {
-                continue;
-            }
-
-            networkInterface.getInterfaceAddresses().stream()
-                    .map( a -> a.getBroadcast() )
-                    .filter( Objects::nonNull )
-                    .forEach( broadcastList::add );
-        }
-        return broadcastList;
-    }
 
     public static void main(String[] args) throws IOException, InterruptedException {
         ServerFinal server = new ServerFinal();

@@ -1,42 +1,56 @@
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
+import java.net.*;
 
 
 public class ClientFinal {
 
-    public ClientFinal(String i) throws IOException, InterruptedException {
+    public ClientFinal() throws IOException, InterruptedException {
         MulticastSocket socket = new MulticastSocket( 7777 );
         InetAddress address = InetAddress.getByName( "224.0.0.1" );
         socket.joinGroup( address );
+        InetSocketAddress serveAddr = (InetSocketAddress) receiveFromServer( socket );
+        socket.leaveGroup( address );
+        socket.close();
+        Thread.sleep( 100 );
+        sendToServer( "New", serveAddr );
         while (true) {
-            InetAddress serveAddr = receiveFromServer( socket );
-            socket.leaveGroup( address );
-            Thread.sleep( 250 );
-            sendToServer( "Alive" + i, serveAddr );
+            InetSocketAddress add=receiveFromServerLoop(serveAddr);
+            sendToServer( "Alive", add );
         }
     }
 
-    private InetAddress receiveFromServer(MulticastSocket socket) throws IOException {
+    private InetSocketAddress receiveFromServerLoop(SocketAddress s) throws IOException {
+        DatagramSocket socket = new DatagramSocket(7776);
         byte[] mex = new byte[65507];
         DatagramPacket packet = new DatagramPacket( mex, mex.length );
         socket.receive( packet );
         String modifiedSentence =
                 new String( packet.getData() );
         System.out.println( modifiedSentence );
-        return packet.getAddress();
+        socket.close();
+        return (InetSocketAddress) packet.getSocketAddress();
+    }
+
+    private SocketAddress receiveFromServer(MulticastSocket socket) throws IOException {
+        byte[] mex = new byte[65507];
+        DatagramPacket packet = new DatagramPacket( mex, mex.length );
+        socket.receive( packet );
+        String modifiedSentence =
+                new String( packet.getData() );
+        System.out.println( modifiedSentence );
+        return packet.getSocketAddress();
     }
 
 
-    private static void sendToServer(String message, InetAddress serverAddress) throws IOException, InterruptedException {
+    private static void sendToServer(String message, InetSocketAddress serverAddress) throws IOException {
         byte[] mex = message.getBytes();
-        new DatagramSocket().send( new DatagramPacket( mex, mex.length, serverAddress, 7776 ) );
+        DatagramSocket socket = new DatagramSocket();
+        socket.send( new DatagramPacket( mex, mex.length, serverAddress.getAddress(), serverAddress.getPort() ) );
+        socket.close();
     }
 
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        ClientFinal c1 = new ClientFinal( "0" );
+        ClientFinal c1 = new ClientFinal();
     }
 }
