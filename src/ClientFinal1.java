@@ -10,7 +10,7 @@ public class ClientFinal1 {
         socket.joinGroup( address );
         while (true) {
             InetSocketAddress serveAddr = (InetSocketAddress) receiveFromServer( socket );
-            Thread.sleep( 500 );
+            Thread.sleep( 100 );
             sendToServer( "Alive" + i, serveAddr );
         }
     }
