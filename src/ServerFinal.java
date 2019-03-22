@@ -15,22 +15,26 @@ public class ServerFinal {
             Thread.sleep( 5000 );
             System.out.println(IotUsers.toString());
             long endTime = System.currentTimeMillis() + 30000;
+            //apro socket unica del server 7776
+            DatagramSocket socketUni = new DatagramSocket(7776);
             while (System.currentTimeMillis() < endTime && !IotUsers.isEmpty()) {
-                unicast();
+
+                unicast(socketUni);
                 Thread.sleep(5000);
             }
+            socketUni.close();
         }
     }
 
-    private void unicast() throws IOException {
+    private void unicast(DatagramSocket socket) throws IOException {
+
         for (int i=0;i< this.IotUsers.size();i++) {
             System.out.println(i);
             InetSocketAddress s=this.IotUsers.get(i);
             boolean vivo = false;
             byte[] mexSend = "Still Alive?".getBytes();
             DatagramPacket packetToSend = new DatagramPacket( mexSend, mexSend.length, s.getAddress(), s.getPort());
-            DatagramSocket socket = new DatagramSocket();
-//            socket.setReuseAddress(true);
+            //socket.setReuseAddress(true);
             //System.out.println(socket.getReuseAddress());
 //            scegliere il numero di pacchetti da inviare
             for (int j = 0; j < 5; j++) {
@@ -55,7 +59,7 @@ public class ServerFinal {
                 this.IotUsers.remove( s );
                 i--;
             }
-            socket.close();
+            //socket.close();
         }
     }
 
