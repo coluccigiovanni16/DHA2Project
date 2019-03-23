@@ -12,14 +12,16 @@ public class ServerFinal {
             discoveryClient();
             Thread.sleep( 5000 );
             System.out.println( IotUsers.toString() );
-            long endTime = System.currentTimeMillis() + 30000;
+//            long endTime = System.currentTimeMillis() + 10000 * IotUsers.size();
             //apro socket unica del server 7776
             this.socketUni = new DatagramSocket( 7776 );
-            while (System.currentTimeMillis() < endTime && !IotUsers.isEmpty()) {
-                unicast();
-                Thread.sleep( 1000 );
-            }
+
+//            while (System.currentTimeMillis() < endTime && !IotUsers.isEmpty()) {
+            unicast();
+//                Thread.sleep( 1000 );
+//            }
             this.socketUni.close();
+            Thread.sleep( 5000 );
         }
     }
 
@@ -29,7 +31,7 @@ public class ServerFinal {
             boolean vivo = false;
             byte[] mexSend = "Still Alive?".getBytes();
             DatagramPacket packetToSend = new DatagramPacket( mexSend, mexSend.length, s.getAddress(), s.getPort() );
-//            scegliere il numero di pacchetti da inviare
+//            scegliere il numero di pacchetti massimo da inviare
             for (int j = 0; j < 5; j++) {
                 this.socketUni.send( packetToSend );
                 byte[] mexRecv = new byte[65507];
@@ -58,6 +60,7 @@ public class ServerFinal {
         byte mex[] = message.getBytes();
         DatagramPacket packetToSend = new DatagramPacket( mex, mex.length, InetAddress.getByName( "224.0.0.1" ), 7777 );
         MulticastSocket multicastSocket = new MulticastSocket();
+        multicastSocket.setTimeToLive( 32 );
         multicastSocket.send( packetToSend );
         long endTime = System.currentTimeMillis() + 5000;
         while (System.currentTimeMillis() < endTime) {
@@ -76,8 +79,6 @@ public class ServerFinal {
         multicastSocket.close();
         System.out.println( "------------------" );
     }
-
-
 
 
     public static void main(String[] args) throws IOException, InterruptedException {
