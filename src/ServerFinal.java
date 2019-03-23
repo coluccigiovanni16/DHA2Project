@@ -10,6 +10,7 @@ public class ServerFinal {
         this.IotUsers = new LinkedList<>();
         while (true) {
             discoveryClient();
+//          attendi 5 secondi prima di iniziare il ciclo di controllo di stato
             Thread.sleep( 5000 );
             System.out.println( IotUsers.toString() );
 //            long endTime = System.currentTimeMillis() + 10000 * IotUsers.size();
@@ -59,16 +60,16 @@ public class ServerFinal {
         String message = "Someone online?";
         byte mex[] = message.getBytes();
         DatagramPacket packetToSend = new DatagramPacket( mex, mex.length, InetAddress.getByName( "224.0.0.1" ), 7777 );
-        MulticastSocket multicastSocket = new MulticastSocket();
-        multicastSocket.setTimeToLive( 32 );
-        multicastSocket.send( packetToSend );
+        MulticastSocket multiSocket = new MulticastSocket();
+        multiSocket.setTimeToLive( 32 );
+        multiSocket.send( packetToSend );
         long endTime = System.currentTimeMillis() + 5000;
         while (System.currentTimeMillis() < endTime) {
             mex = new byte[65507];
             DatagramPacket packet = new DatagramPacket( mex, mex.length );
-            multicastSocket.setSoTimeout( 6000 );
+            multiSocket.setSoTimeout( 6000 );
             try {
-                multicastSocket.receive( packet );
+                multiSocket.receive( packet );
                 System.out.println( new String( packet.getData() ) );
                 System.out.println( packet.getSocketAddress() );
                 this.IotUsers.add( (InetSocketAddress) packet.getSocketAddress() );
@@ -76,14 +77,11 @@ public class ServerFinal {
                 System.out.println( "timeout" );
             }
         }
-        multicastSocket.close();
+        multiSocket.close();
         System.out.println( "------------------" );
     }
 
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        new ServerFinal();
-    }
 }
 
 

@@ -1,39 +1,42 @@
 import java.io.IOException;
 import java.net.*;
-import java.util.Enumeration;
 
 
 public class ClientFinal1 {
 
-    private int myPort;
+    private final int serverMulticastPORT = 7777;
+    private final InetAddress serverMulticastAddress = InetAddress.getByName( "224.0.0.1" );
+
 
     public ClientFinal1() throws IOException, InterruptedException {
 
         while (true) {
-            MulticastSocket socket = new MulticastSocket( 7777 );
-            InetAddress address = InetAddress.getByName( "224.0.0.1" );
-            selectNetInterface( socket );
-            socket.joinGroup( address );
-            InetSocketAddress serveAddr = (InetSocketAddress) receiveFromServer( socket );
-            socket.leaveGroup( address );
-            socket.close();
+            MulticastSocket multiSocket = new MulticastSocket( serverMulticastPORT );
+            multiSocket.joinGroup( serverMulticastAddress );
+            InetSocketAddress serveAddr = (InetSocketAddress) receiveFromServer( multiSocket );
+            multiSocket.leaveGroup( serverMulticastAddress );
+            multiSocket.close();
+//            Attento 1 di secondo in quanto il server deve mettersi in scolto dopo
+//            aver mandato un messaggio in multicast.
             Thread.sleep( 1000 );
             //apro socket client
-            DatagramSocket socket1 = new DatagramSocket(this.myPort);
-            socket1.setReuseAddress( true );
+            DatagramSocket unicastSocket = new DatagramSocket();
+            unicastSocket.setReuseAddress( true );
             //invio risposta server senza chiudere socket
-            sendToServerUnicast( "New", serveAddr, socket1 );
+            sendToServerUnicast( "New", serveAddr, unicastSocket );
             InetSocketAddress add = new InetSocketAddress( serveAddr.getAddress(), 7776 );
             boolean serverSendedWell = true;
+//          dopo aver mandato un messaggio di registrazione al server si mette in modalità watchdog
+//          in attesa di messaggi di controllo di stato(online nonOnline)
             while (serverSendedWell) {
-                serverSendedWell = receiveFromServerLoop( socket1 );
+                serverSendedWell = receiveFromServerLoop( unicastSocket );
                 if (serverSendedWell) {
-                    sendToServerUnicast( "Alive", add, socket1 );
-                    this.myPort = socket1.getLocalPort();
-                    System.out.println( this.myPort );
+                    sendToServerUnicast( "Alive", add, unicastSocket );
                 }
             }
-            socket1.close();
+//          in caso di errori (server off o altro) il client si resetta, ripendendo il ciclo
+//          dalla fase di 'log-in'
+            unicastSocket.close();
         }
     }
 
@@ -66,30 +69,6 @@ public class ClientFinal1 {
                 new String( packet.getData() );
         System.out.println( modifiedSentence );
         return packet.getSocketAddress();
-    }
-
-
-    private static void sendToServer(String message, InetSocketAddress serverAddress) throws IOException, InterruptedException {
-        byte[] mex = message.getBytes();
-        DatagramSocket socket = new DatagramSocket();
-
-        socket.send( new DatagramPacket( mex, mex.length, serverAddress.getAddress(), serverAddress.getPort() ) );
-        Thread.sleep( 1000 );
-        socket.close();
-    }
-
-    private void selectNetInterface(MulticastSocket socket) throws SocketException {
-        Enumeration e = NetworkInterface.getNetworkInterfaces();
-        while (e.hasMoreElements()) {
-            NetworkInterface n = (NetworkInterface) e.nextElement();
-            Enumeration ee = n.getInetAddresses();
-            while (ee.hasMoreElements()) {
-                InetAddress i = (InetAddress) ee.nextElement();
-                if (i.isSiteLocalAddress() && !i.isAnyLocalAddress() && !i.isLinkLocalAddress() && !i.isLoopbackAddress() && !i.isMulticastAddress()) {
-                    socket.setNetworkInterface( NetworkInterface.getByName( n.getName() ) );
-                }
-            }
-        }
     }
 
 
