@@ -21,6 +21,7 @@ public class Server {
     private JButton shoutDownButton;
     private JPanel rootPanel;
     private JPanel statePanel;
+    private JLabel stateLabel;
     private JLabel stateServer;
     private LinkedList<InetSocketAddress> IotUsers;
     private DatagramSocket socketUni;
@@ -65,7 +66,7 @@ public class Server {
     private void aggiornaListaIot() {
         listIotUser.setText( "Utenti : " + IotUsers.size() + "\n\n" );
         for (int i = 0; i < IotUsers.size(); i++) {
-            listIotUser.append( "Iot device #" + i + 1 + "\n" );
+            listIotUser.append( "Iot device #" + (i + 1) + "\n" );
             listIotUser.append( IotUsers.get( i ).toString() + "\n\n" );
         }
     }
