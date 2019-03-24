@@ -33,17 +33,17 @@ public class Client {
             DatagramSocket unicastSocket = new DatagramSocket();
             unicastSocket.setReuseAddress( true );
             //invio risposta server senza chiudere socket
-            stateOfConn.setText( "INVIO MESSAGGIO MULTICAST AL SERVER" );
+            stateOfConn.setText( "INVIO MESSAGGIO DI RISPOSTA MULTICAST AL SERVER" );
             sendToServerUnicast( "New", serveAddr, unicastSocket );
             InetSocketAddress add = new InetSocketAddress( serveAddr.getAddress(), 7776 );
             boolean serverSendedWell = true;
 //          dopo aver mandato un messaggio di registrazione al server si mette in modalità watchdog
 //          in attesa di messaggi di controllo di stato(online nonOnline)
             while (serverSendedWell) {
-                stateOfConn.setText( "IN ATTESA DI RICHIESTA DEL PRORPIO STATO DAL SERVER" );
+                stateOfConn.setText( "ONLINE" );
                 serverSendedWell = receiveFromServerLoop( unicastSocket );
                 if (serverSendedWell) {
-                    stateOfConn.setText( "INVIO MESSAGGIO DI STATO OK AL SERVER" );
+                    stateOfConn.setText( "INVIO MESSAGGIO DI STATO AL SERVER" );
                     sendToServerUnicast( "Alive", add, unicastSocket );
                 }
             }
@@ -54,7 +54,7 @@ public class Client {
     }
 
     private void setGuivisible() {
-        this.frame = new JFrame( "SERVER" );
+        this.frame = new JFrame( "CLIENT" );
         this.frame.setContentPane( rootPanel );
         this.frame.pack();
         this.frame.setDefaultCloseOperation( WindowConstants.EXIT_ON_CLOSE );
