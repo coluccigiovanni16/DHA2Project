@@ -2,22 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="27eb1462-0434-4f89-8064-7f939015011a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/ClientFinal1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/ServerFinal.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/broadcast/BroadcastingClient.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/broadcast/MulticastPublisher.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/broadcast/MulticastReceiver.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/medium/ClientUDP.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/medium/ClientUDP1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/medium/ServerUDP.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/multicast/Client.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/multicast/Receiving.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/multicast/Sending.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/multicast/Server.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/simple/Client.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/simple/Server.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ClientFinal1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ClientFinal1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ServerFinal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ServerFinal.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -32,8 +17,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/ServerFinal.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="26" column="30" selection-start-line="26" selection-start-column="30" selection-end-line="26" selection-end-column="30" />
+            <state relative-caret-position="51">
+              <caret line="15" column="22" lean-forward="true" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -72,8 +57,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ClientFinal1.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1122">
-              <caret line="68" column="48" lean-forward="true" selection-start-line="68" selection-start-column="48" selection-end-line="68" selection-end-column="48" />
+            <state relative-caret-position="87">
+              <caret line="9" column="46" selection-start-line="9" selection-start-column="46" selection-end-line="9" selection-end-column="46" />
             </state>
           </provider>
         </entry>
@@ -144,7 +129,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553443697342" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553443785484" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.1557912" />
@@ -246,7 +231,7 @@
       <workItem from="1553352379729" duration="10560000" />
       <workItem from="1553367904393" duration="309000" />
       <workItem from="1553424223098" duration="5642000" />
-      <workItem from="1553442719659" duration="838000" />
+      <workItem from="1553442719659" duration="1147000" />
     </task>
     <task id="LOCAL-00001" summary="studiare le tempistiche">
       <created>1553257115276</created>
@@ -269,11 +254,25 @@
       <option name="project" value="LOCAL" />
       <updated>1553368078303</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Tempi a costanti">
+      <created>1553443594363</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1553443594363</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Tempi costanti">
+      <created>1553443797834</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1553443797834</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="38018000" />
+    <option name="totallyTimeSpent" value="38327000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -288,7 +287,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3286119" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.42776203" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.42716858" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.398017" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -317,7 +316,9 @@
     <MESSAGE value="studiare le tempistiche" />
     <MESSAGE value="architettura funzionante , faccio piccola gui" />
     <MESSAGE value="to do: -gestire tempi;&#10;       -eventuale GUI;&#10;       -ottimizzazione codice" />
-    <option name="LAST_COMMIT_MESSAGE" value="to do: -gestire tempi;&#10;       -eventuale GUI;&#10;       -ottimizzazione codice" />
+    <MESSAGE value="Tempi a costanti" />
+    <MESSAGE value="Tempi costanti" />
+    <option name="LAST_COMMIT_MESSAGE" value="Tempi costanti" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -370,15 +371,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ClientFinal1.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1122">
-          <caret line="68" column="48" lean-forward="true" selection-start-line="68" selection-start-column="48" selection-end-line="68" selection-end-column="48" />
+        <state relative-caret-position="87">
+          <caret line="9" column="46" selection-start-line="9" selection-start-column="46" selection-end-line="9" selection-end-column="46" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ServerFinal.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="26" column="30" selection-start-line="26" selection-start-column="30" selection-end-line="26" selection-end-column="30" />
+        <state relative-caret-position="51">
+          <caret line="15" column="22" lean-forward="true" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

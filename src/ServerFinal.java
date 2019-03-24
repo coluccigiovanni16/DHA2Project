@@ -18,7 +18,7 @@ public class ServerFinal {
 //          attendi 5 secondi prima di iniziare il ciclo di controllo di stato
             Thread.sleep(1000);
             System.out.println(IotUsers.toString());
-            long endTime = System.currentTimeMillis() + DISCOVERYTIME * IotUsers.size();
+            long endTime = System.currentTimeMillis() + DISCOVERYTIME// * IotUsers.size();
             //apro socket unica del server 7776
             this.socketUni = new DatagramSocket(7776);
             while (System.currentTimeMillis() < endTime && !IotUsers.isEmpty()) {
