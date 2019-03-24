@@ -6,9 +6,10 @@ import java.util.Enumeration;
 
 public class Client {
 
-    private final static int TIMETORESTART = 20000;
+    private final static int TIMETORESTART = 20000; //tempo di attesa del messaggio dal server in unicast
     private final int serverMulticastPORT = 7777;
     private final InetAddress serverMulticastAddress = InetAddress.getByName( "224.0.0.1" );
+    private final int serverUnicastPORT = 7776;
     private JFrame frame;
     private JPanel rootPanel;
     private JLabel stateOfConn;
@@ -20,8 +21,7 @@ public class Client {
      */
     public Client() throws IOException, InterruptedException {
         setGuivisible();
-
-
+        //ciclo vita del client
         while (true) {
             MulticastSocket multiSocket = new MulticastSocket( serverMulticastPORT );
             stateOfConn.setText( "IN ATTESA DI RICEZIONE DEL MESSAGGIO MULTICAST DAL SERVER" );
@@ -30,7 +30,7 @@ public class Client {
             InetSocketAddress serveAddr = (InetSocketAddress) receiveFromServer( multiSocket );
             multiSocket.leaveGroup( serverMulticastAddress );
             multiSocket.close();
-//            Attento 1 di secondo in quanto il server deve mettersi in scolto dopo
+//            Attento 1 di secondo in quanto il server deve mettersi in ascolto dopo
 //            aver mandato un messaggio in multicast.
             Thread.sleep( 1000 );
             //apro socket client
@@ -39,7 +39,7 @@ public class Client {
             //invio risposta server senza chiudere socket
             stateOfConn.setText( "INVIO MESSAGGIO DI RISPOSTA MULTICAST AL SERVER" );
             sendToServerUnicast( "New", serveAddr, unicastSocket );
-            InetSocketAddress add = new InetSocketAddress( serveAddr.getAddress(), 7776 );
+            InetSocketAddress add = new InetSocketAddress( serveAddr.getAddress(), serverUnicastPORT );
             boolean serverSendedWell = true;
 //          dopo aver mandato un messaggio di registrazione al server si mette in modalità watchdog
 //          in attesa di messaggi di controllo di stato(online nonOnline)
@@ -76,9 +76,9 @@ public class Client {
 
 
     /**
-     * @param message
-     * @param serverAddress
-     * @param socket
+     * @param message messaggio da inserire nel pacchetto
+     * @param serverAddress indirizzio a cui inviare il messaggio (IP/PORT)
+     * @param socket socket da usare per la comunicazione
      * @throws IOException
      */
     private void sendToServerUnicast(String message, InetSocketAddress serverAddress, DatagramSocket socket) throws IOException {
@@ -87,8 +87,8 @@ public class Client {
     }
 
     /**
-     * @param socket
-     * @return
+     * @param socket socket sulla quale restare in ascolto
+     * @return boolean true se ricevo un pacchetto false se supero il timeout della socket
      */
     private boolean receiveFromServerLoop(DatagramSocket socket) {
         DatagramPacket packet = receive( socket );
@@ -104,13 +104,15 @@ public class Client {
     }
 
     /**
-     * @param socket
-     * @return
+     * @param socket socket sulla quale restare in ascolto
+     * @return packet ricevuto sulla socket,null in caso di timeout
      */
     private DatagramPacket receive(DatagramSocket socket) {
         byte[] mex = new byte[65507];
         DatagramPacket packet = new DatagramPacket( mex, mex.length );
         try {
+            // controllo sul tipo di socket per settare il timeout solo in caso di comunicazione unicast
+            // in caso di multicast è stato preferito la receive bloccante essendo la discovery effettuata dal server
             if (!(socket instanceof MulticastSocket)) {
                 System.out.println( "unicast" );
                 socket.setSoTimeout( TIMETORESTART );
@@ -124,15 +126,17 @@ public class Client {
             return null;
         } catch (SocketException e) {
             e.printStackTrace();
+            System.exit(1);
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(1);
         }
         return packet;
     }
 
     /**
-     * @param socket
-     * @return
+     * @param socket socket sulla quale restare in ascolto
+     * @return SocketAddress mittente del pacchetto
      */
     private SocketAddress receiveFromServer(MulticastSocket socket) {
         DatagramPacket packet = receive( socket );
@@ -143,6 +147,7 @@ public class Client {
      * @param socket
      * @throws SocketException
      */
+    // consente di settare l'intefaccia di rete per rendere il programma utilizzabile anche da Mac
     private void selectNetInterface(MulticastSocket socket) throws SocketException {
         Enumeration e = NetworkInterface.getNetworkInterfaces();
         while (e.hasMoreElements()) {
@@ -157,6 +162,7 @@ public class Client {
         }
     }
 
+    // main test per controllare il comportamento della classe
     public static void main(String[] args) throws IOException, InterruptedException {
         new Client();
     }
