@@ -7,6 +7,7 @@ public class ClientFinal1 {
 
     private final int serverMulticastPORT = 7777;
     private final InetAddress serverMulticastAddress = InetAddress.getByName( "224.0.0.1" );
+    private final static int TIMETORESTART = 60000;
 
 
     public ClientFinal1() throws IOException, InterruptedException {
@@ -66,7 +67,7 @@ public class ClientFinal1 {
         try {
             if (!(socket instanceof MulticastSocket)) {
                 System.out.println( "unicast" );
-                socket.setSoTimeout( 60000 );
+                socket.setSoTimeout(TIMETORESTART);
             }
             socket.receive( packet );
             String modifiedSentence =
