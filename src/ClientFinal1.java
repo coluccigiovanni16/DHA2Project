@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.net.*;
+import java.util.Enumeration;
 
 
 public class ClientFinal1 {
@@ -12,6 +13,7 @@ public class ClientFinal1 {
 
         while (true) {
             MulticastSocket multiSocket = new MulticastSocket( serverMulticastPORT );
+            selectNetInterface( multiSocket );
             multiSocket.joinGroup( serverMulticastAddress );
             InetSocketAddress serveAddr = (InetSocketAddress) receiveFromServer( multiSocket );
             multiSocket.leaveGroup( serverMulticastAddress );
@@ -40,37 +42,69 @@ public class ClientFinal1 {
         }
     }
 
-    private void sendToServerUnicast(String message, InetSocketAddress serverAddress, DatagramSocket socket) throws IOException, InterruptedException {
+    private void sendToServerUnicast(String message, InetSocketAddress serverAddress, DatagramSocket socket) throws IOException {
         byte[] mex = message.getBytes();
         socket.send( new DatagramPacket( mex, mex.length, serverAddress.getAddress(), serverAddress.getPort() ) );
     }
 
-    private boolean receiveFromServerLoop(DatagramSocket socket) throws IOException {
+    private boolean receiveFromServerLoop(DatagramSocket socket) {
+        DatagramPacket packet = receive( socket );
+        if (packet != null) {
+            String modifiedSentence =
+                    new String( packet.getData() );
+            System.out.println( modifiedSentence );
+            System.out.println( packet.getSocketAddress() );
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private DatagramPacket receive(DatagramSocket socket) {
+        byte[] mex = new byte[65507];
+        DatagramPacket packet = new DatagramPacket( mex, mex.length );
         try {
-            byte[] mex = new byte[65507];
-            DatagramPacket packet = new DatagramPacket( mex, mex.length );
-            socket.setSoTimeout( 60000 );
+            if (!(socket instanceof MulticastSocket)) {
+                System.out.println( "unicast" );
+                socket.setSoTimeout( 60000 );
+            }
             socket.receive( packet );
             String modifiedSentence =
                     new String( packet.getData() );
             System.out.println( modifiedSentence );
             System.out.println( packet.getSocketAddress() );
         } catch (SocketTimeoutException timeout) {
-            return false;
+            return null;
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return true;
+        return packet;
     }
 
-    private SocketAddress receiveFromServer(MulticastSocket socket) throws IOException {
-        byte[] mex = new byte[65507];
-        DatagramPacket packet = new DatagramPacket( mex, mex.length );
-        socket.receive( packet );
-        String modifiedSentence =
-                new String( packet.getData() );
-        System.out.println( modifiedSentence );
+    private SocketAddress receiveFromServer(MulticastSocket socket) {
+        DatagramPacket packet = receive( socket );
         return packet.getSocketAddress();
     }
 
 
+    private void selectNetInterface(MulticastSocket socket) throws SocketException {
+        Enumeration e = NetworkInterface.getNetworkInterfaces();
+        while (e.hasMoreElements()) {
+            NetworkInterface n = (NetworkInterface) e.nextElement();
+            Enumeration ee = n.getInetAddresses();
+            while (ee.hasMoreElements()) {
+                InetAddress i = (InetAddress) ee.nextElement();
+                if (i.isSiteLocalAddress() && !i.isAnyLocalAddress() && !i.isLinkLocalAddress() && !i.isLoopbackAddress() && !i.isMulticastAddress()) {
+                    socket.setNetworkInterface( NetworkInterface.getByName( n.getName() ) );
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        ClientFinal1 c = new ClientFinal1();
+    }
 
 }
