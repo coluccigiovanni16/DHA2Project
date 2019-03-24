@@ -7,7 +7,7 @@ public class ClientFinal1 {
 
     private final int serverMulticastPORT = 7777;
     private final InetAddress serverMulticastAddress = InetAddress.getByName( "224.0.0.1" );
-    private final static int TIMETORESTART = 60000;
+    private final static int TIMETORESTART = 20000;
 
 
     public ClientFinal1() throws IOException, InterruptedException {

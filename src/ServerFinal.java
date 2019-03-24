@@ -5,7 +5,7 @@ import java.util.LinkedList;
 public class ServerFinal {
     private LinkedList<InetSocketAddress> IotUsers;
     private DatagramSocket socketUni;
-    private final static int DISCOVERYTIME = 30000;
+    private final static int DISCOVERYTIME = 10000;
     private final static int WAITMULTICAST = 5000;
     private final static int WAITRESPONSE = 100;
     private final static int NUMBEROFPACKET = 5;
@@ -21,7 +21,6 @@ public class ServerFinal {
             long endTime = System.currentTimeMillis() + DISCOVERYTIME * IotUsers.size();
             //apro socket unica del server 7776
             this.socketUni = new DatagramSocket(7776);
-
             while (System.currentTimeMillis() < endTime && !IotUsers.isEmpty()) {
                 unicast();
                 Thread.sleep(1000);
@@ -84,6 +83,10 @@ public class ServerFinal {
         }
         multiSocket.close();
         System.out.println("------------------");
+    }
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        new ServerFinal();
     }
 
 
