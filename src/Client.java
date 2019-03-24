@@ -14,6 +14,10 @@ public class Client {
     private JLabel stateOfConn;
 
 
+    /**
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public Client() throws IOException, InterruptedException {
         setGuivisible();
 
@@ -53,6 +57,9 @@ public class Client {
         }
     }
 
+    /**
+     *
+     */
     private void setGuivisible() {
         this.frame = new JFrame( "CLIENT" );
         this.frame.setContentPane( rootPanel );
@@ -68,11 +75,21 @@ public class Client {
     }
 
 
+    /**
+     * @param message
+     * @param serverAddress
+     * @param socket
+     * @throws IOException
+     */
     private void sendToServerUnicast(String message, InetSocketAddress serverAddress, DatagramSocket socket) throws IOException {
         byte[] mex = message.getBytes();
         socket.send( new DatagramPacket( mex, mex.length, serverAddress.getAddress(), serverAddress.getPort() ) );
     }
 
+    /**
+     * @param socket
+     * @return
+     */
     private boolean receiveFromServerLoop(DatagramSocket socket) {
         DatagramPacket packet = receive( socket );
         if (packet != null) {
@@ -86,6 +103,10 @@ public class Client {
         }
     }
 
+    /**
+     * @param socket
+     * @return
+     */
     private DatagramPacket receive(DatagramSocket socket) {
         byte[] mex = new byte[65507];
         DatagramPacket packet = new DatagramPacket( mex, mex.length );
@@ -109,11 +130,19 @@ public class Client {
         return packet;
     }
 
+    /**
+     * @param socket
+     * @return
+     */
     private SocketAddress receiveFromServer(MulticastSocket socket) {
         DatagramPacket packet = receive( socket );
         return packet.getSocketAddress();
     }
 
+    /**
+     * @param socket
+     * @throws SocketException
+     */
     private void selectNetInterface(MulticastSocket socket) throws SocketException {
         Enumeration e = NetworkInterface.getNetworkInterfaces();
         while (e.hasMoreElements()) {
@@ -129,6 +158,6 @@ public class Client {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        Client c = new Client();
+        new Client();
     }
 }

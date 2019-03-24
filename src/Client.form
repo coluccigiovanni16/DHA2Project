@@ -8,7 +8,7 @@
     <properties>
       <maximumSize width="500" height="250"/>
       <minimumSize width="500" height="250"/>
-      <preferredSize width="250" height="500"/>
+      <preferredSize width="500" height="250"/>
     </properties>
     <border type="bevel-lowered"/>
     <children>

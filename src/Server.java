@@ -25,6 +25,10 @@ public class Server {
     private JLabel stateLabel;
 
 
+    /**
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public Server() throws IOException, InterruptedException {
         this.IotUsers = new LinkedList<>();
         setGuivisible();
@@ -47,19 +51,21 @@ public class Server {
         }
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        Server s = new Server();
 
-    }
-
+    /**
+     *
+     */
     private void aggiornaListaIot() {
-        listIotUser.setText( "Utenti : " + IotUsers.size()+"\n\n" );
+        listIotUser.setText( "Utenti : " + IotUsers.size() + "\n\n" );
         for (int i = 0; i < IotUsers.size(); i++) {
-            listIotUser.append( "Iot device #" + i + "\n" );
+            listIotUser.append( "Iot device #" + i + 1 + "\n" );
             listIotUser.append( IotUsers.get( i ).toString() + "\n\n" );
         }
     }
 
+    /**
+     *
+     */
     private void setGuivisible() {
         this.frame = new JFrame( "SERVER" );
         this.frame.setContentPane( rootPanel );
@@ -81,6 +87,9 @@ public class Server {
         this.frame.setVisible( true );
     }
 
+    /**
+     * @throws IOException
+     */
     private void unicast() throws IOException {
         stateServer.setText( "UNICAST" );
         statePanel.setBackground( Color.CYAN );
@@ -113,6 +122,9 @@ public class Server {
         }
     }
 
+    /**
+     * @throws IOException
+     */
     private void discoveryClient() throws IOException {
         stateServer.setText( "MULTICAST" );
         statePanel.setBackground( Color.GREEN );
@@ -140,7 +152,10 @@ public class Server {
         System.out.println( "------------------" );
     }
 
+    public static void main(String[] args) throws IOException, InterruptedException {
+        new Server();
 
+    }
 }
 
 
