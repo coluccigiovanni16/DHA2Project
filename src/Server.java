@@ -18,7 +18,7 @@ public class Server {
     private final InetAddress serverMulticastAddress = InetAddress.getByName( "224.0.0.1" );
     private final int serverUnicastPORT = 7776;
     private JTextArea listIotUser;
-    private JButton shoutDownButton;
+    private JButton shutDownButton;
     private JPanel rootPanel;
     private JPanel statePanel;
     private JLabel stateLabel;
@@ -103,7 +103,7 @@ public class Server {
                 System.exit( 0 );
             }
         } );
-        this.shoutDownButton.addMouseListener( new MouseAdapter() {
+        this.shutDownButton.addMouseListener( new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 System.exit( 0 );

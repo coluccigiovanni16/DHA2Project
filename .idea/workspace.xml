@@ -6,8 +6,13 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a0c3762a-9261-4a74-9e32-e01e61e9ed8a" name="Default Changelist" comment="AGGIUNTI JAR FILES">
+    <list default="true" id="a0c3762a-9261-4a74-9e32-e01e61e9ed8a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/Client.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/Server$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/Server$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/DHA2Project/Server.class" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -21,12 +26,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Server.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="123">
+            <state relative-caret-position="1411">
               <caret line="91" column="30" selection-start-line="91" selection-end-line="92" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#4549#4702#0" expanded="true" />
-                <element signature="e#4701#4702#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -35,8 +38,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Client.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="256">
-              <caret line="163" selection-start-line="163" selection-end-line="163" />
+            <state relative-caret-position="77">
+              <caret line="118" column="50" lean-forward="true" selection-start-line="118" selection-start-column="50" selection-end-line="118" selection-end-column="50" />
             </state>
           </provider>
         </entry>
@@ -73,9 +76,9 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="705" />
-    <option name="y" value="-25" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="412" />
+    <option name="y" value="57" />
     <option name="width" value="980" />
     <option name="height" value="1040" />
   </component>
@@ -84,8 +87,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -96,12 +97,32 @@
             <path>
               <item name="DHA2Project" type="b2602c69:ProjectViewProjectNode" />
               <item name="DHA2Project" type="462c0819:PsiDirectoryNode" />
+              <item name="out" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="DHA2Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DHA2Project" type="462c0819:PsiDirectoryNode" />
+              <item name="out" type="462c0819:PsiDirectoryNode" />
+              <item name="artifacts" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="DHA2Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DHA2Project" type="462c0819:PsiDirectoryNode" />
+              <item name="out" type="462c0819:PsiDirectoryNode" />
+              <item name="artifacts" type="462c0819:PsiDirectoryNode" />
+              <item name="DHA2Project_jar" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="DHA2Project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DHA2Project" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -111,7 +132,8 @@
     <property name="GenerateAntBuildDialog.outputFileNameProperty" value="dha2project" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553526708707" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553531833452" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Desktop" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.1557912" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -186,7 +208,10 @@
       <workItem from="1553449342407" duration="2753000" />
       <workItem from="1553457406914" duration="1167000" />
       <workItem from="1553508187134" duration="1101000" />
-      <workItem from="1553520337474" duration="5364000" />
+      <workItem from="1553520337474" duration="6062000" />
+      <workItem from="1553527746206" duration="664000" />
+      <workItem from="1553529116972" duration="22000" />
+      <workItem from="1553529172038" duration="58000" />
     </task>
     <task id="LOCAL-00001" summary="ok">
       <created>1553447021646</created>
@@ -223,16 +248,23 @@
       <option name="project" value="LOCAL" />
       <updated>1553526476799</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="AGGIUNTI JAR FILES">
+      <created>1553526722145</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1553526722145</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="14697000" />
+    <option name="totallyTimeSpent" value="16139000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.21677852" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2261745" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -241,7 +273,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3286119" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49932885" visible="true" weight="0.4206799" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49932885" weight="0.4206799" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.398017" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -344,35 +376,24 @@
     <entry file="file://$PROJECT_DIR$/src/Client.form">
       <provider selected="true" editor-type-id="ui-designer" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/serv.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="13" column="67" lean-forward="true" selection-start-line="13" selection-start-column="67" selection-end-line="13" selection-end-column="67" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/serv.java" />
     <entry file="file://$PROJECT_DIR$/src/Server.form">
       <provider selected="true" editor-type-id="ui-designer" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="123">
+        <state relative-caret-position="1411">
           <caret line="91" column="30" selection-start-line="91" selection-end-line="92" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#4549#4702#0" expanded="true" />
-            <element signature="e#4701#4702#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Client.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
-          <caret line="163" selection-start-line="163" selection-end-line="163" />
+        <state relative-caret-position="77">
+          <caret line="118" column="50" lean-forward="true" selection-start-line="118" selection-start-column="50" selection-end-line="118" selection-end-column="50" />
         </state>
       </provider>
     </entry>
