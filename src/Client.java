@@ -24,7 +24,7 @@ public class Client {
         //ciclo vita del client
         while (true) {
             MulticastSocket multiSocket = new MulticastSocket( serverMulticastPORT );
-            stateOfConn.setText( "IN ATTESA DI RICEZIONE DEL MESSAGGIO MULTICAST DAL SERVER" );
+            stateOfConn.setText( "IN ATTESA DI CONNESSIONE AL SERVER" );
             selectNetInterface( multiSocket );
             multiSocket.joinGroup( serverMulticastAddress );
             InetSocketAddress serveAddr = (InetSocketAddress) receiveFromServer( multiSocket );
@@ -58,27 +58,21 @@ public class Client {
     }
 
     /**
-     *
+     * viene inizializzata l'interfaccia grafica e resa visibile
      */
     private void setGuivisible() {
         this.frame = new JFrame( "CLIENT" );
         this.frame.setContentPane( rootPanel );
         this.frame.pack();
         this.frame.setDefaultCloseOperation( WindowConstants.EXIT_ON_CLOSE );
-//        this.frame.addWindowListener( new WindowAdapter() {
-//            @Override
-//            public void windowClosing(WindowEvent e) {
-//                System.exit( 0 );
-//            }
-//        } );
         this.frame.setVisible( true );
     }
 
 
     /**
-     * @param message messaggio da inserire nel pacchetto
+     * @param message       messaggio da inserire nel pacchetto
      * @param serverAddress indirizzio a cui inviare il messaggio (IP/PORT)
-     * @param socket socket da usare per la comunicazione
+     * @param socket        socket da usare per la comunicazione
      * @throws IOException
      */
     private void sendToServerUnicast(String message, InetSocketAddress serverAddress, DatagramSocket socket) throws IOException {
@@ -126,10 +120,10 @@ public class Client {
             return null;
         } catch (SocketException e) {
             e.printStackTrace();
-            System.exit(1);
+            System.exit( 1 );
         } catch (IOException e) {
             e.printStackTrace();
-            System.exit(1);
+            System.exit( 1 );
         }
         return packet;
     }

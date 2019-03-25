@@ -10,8 +10,8 @@ import java.util.LinkedList;
 
 public class Server {
     private final static int DISCOVERYTIME = 10000; // intervallo di tempo tra una discovery e la successiva
-    private final static int WAITMULTICAST = 5000; // tempo di attesa di risposta sulla socket multicast
-    private final static int WAITRESPONSE = 100; // attesa di risposta nella comunicazione unicast prima di considerare il pacchettp perso
+    private final static int WAITMULTICAST = 5000; // tempo di attesa di risposta della socket multicast
+    private final static int WAITRESPONSE = 500; // attesa di risposta nella comunicazione unicast prima di considerare il pacchettp perso
     private final static int NUMBEROFPACKET = 5; // numero di pacchetti da inviare basato sul LOSS RATE della rete
     private final static int TTL = 32; // time to live del pacchetto in multicast
     private final int serverMulticastPORT = 7777;
@@ -32,13 +32,22 @@ public class Server {
      * @throws IOException
      * @throws InterruptedException
      */
-    public Server() throws IOException, InterruptedException {
+    public Server() throws InterruptedException, IOException {
         this.IotUsers = new LinkedList<>();
         setGuivisible();
         //ciclo vita del server
         while (true) {
             // discovery dei client
-            discoveryClient();
+            try {
+                discoveryClient();
+//           in caso di errore si apre un pop-up di errore che porta alla chiusura del programma
+            } catch (IOException e) {
+                int input = JOptionPane.showOptionDialog( null, "Problema di connessione del server, premi OK per chiudere!", "ERROR", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE, null, null, null );
+                if (input == JOptionPane.OK_OPTION) {
+                    System.exit( -1 );
+                }
+
+            }
             aggiornaListaIot();
 //          attendi 1 secondi prima di iniziare il ciclo di controllo di stato
             Thread.sleep( 1000 );
@@ -48,20 +57,28 @@ public class Server {
             this.socketUni = new DatagramSocket( serverUnicastPORT );
             // ciclo comunicazioni unicat
             while (System.currentTimeMillis() < endTime && !IotUsers.isEmpty()) {
-                unicast();
+                try {
+                    unicast();
+                } catch (IOException e) {
+                    int input = JOptionPane.showOptionDialog( null, "Problema di connessione del server, premi OK per chiudere!", "ERROR", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE, null, null, null );
+                    if (input == JOptionPane.OK_OPTION) {
+                        System.exit( -1 );
+                    }
+
+                }
                 aggiornaListaIot();
-                //          attendi 1 secondi prima di iniziare il ciclo di controllo di stato
+                //          attendi 1 secondo prima di iniziare il ciclo di controllo di stato
                 Thread.sleep( 1000 );
             }
             this.socketUni.close();
-            //          attendi 1 secondi prima di iniziare il ciclo di controllo di stato
+            //          attendi 1 secondo prima di iniziare il ciclo di controllo di stato
             Thread.sleep( 1000 );
         }
     }
 
 
     /**
-     * aggiornamento interfaccia server con la lista degli utenti
+     * aggiornamento interfaccia server relativa la parte della lista utenti
      */
     private void aggiornaListaIot() {
         listIotUser.setText( "Utenti : " + IotUsers.size() + "\n\n" );
@@ -72,7 +89,7 @@ public class Server {
     }
 
     /**
-     *
+     * viene inizializzata l'interfaccia grafica e resa visibile
      */
     private void setGuivisible() {
         this.frame = new JFrame( "SERVER" );
@@ -96,7 +113,12 @@ public class Server {
     }
 
     /**
-     * comunicazione unicast
+     * Viene impostata la comunicazione di tipo Unicast, cioè con un Iot Client alla volta,
+     * è esguito un ciclo sulla lista dei utenti,caratterizzati dal proprio indirizzo ip + porta,
+     * viene inviato un datagramma al client in questione che in caso di stato attivo risponde con un messaggio che
+     * viene intercettato attraverso il metodo receive(con timeout settato ), si passa poi al client successivo
+     * nella lista; nel caso non ci sia risposta dal client per 5 volte consecutive, quest'ultimo viene rimosso
+     * dalla lista in quanto considerato spento.
      * @throws IOException
      */
     private void unicast() throws IOException {
@@ -122,7 +144,7 @@ public class Server {
                     break;
                 } catch (SocketTimeoutException timeout) {
                     //pacchetto perso
-                    System.out.println( "perso" );
+                    System.out.println( "Timeout - Datagram response non received" );
                 }
             }
             // controllo sullo stato del client
@@ -135,7 +157,9 @@ public class Server {
     }
 
     /**
-     * comunicazione multicast
+     * Viene impostata la comunicazione di tipo Multicast in cui è inviato un unico pacchetto sulla rete che è
+     * intercettato e eleborato solo dai client che si sono messi in ascolto su quell'indirizzo(ip+porta) multicast;
+     * in seguito il server si mette in ricezione attendendo i pacchetti dai client per registrarli la prima volta.
      * @throws IOException
      */
     private void discoveryClient() throws IOException {
